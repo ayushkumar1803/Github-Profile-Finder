@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTd2Pww0KcSkgHQjDQSktfTkt8thW6PK6DH4A&usqp=CAU" type="image/x-icon">
+    <title>Github Profile Finder</title>
+    <style>
+        body{
+            background-color: #555;
+            font-size: 25px;
+            font-weight: bold;
+
+        }
+        img {
+            width: 150px;
+            height: 150px;
+        }
+        label{
+            margin-top: 20px;
+            color: beige;
+        }
+
+        .container{
+            background-color: #888;
+            color: #333;
+            margin-top: 40px;
+            border-radius: 5px;
+            border:2px solid #333;
+            box-shadow:2px 3px 5px #999;
+        }
+        input:focus{
+            background-color: #444;
+            color:beige;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form id="userForm">
+            <div class="form-group">
+                <label>Github Username:</label>
+                <input type="text" id="username" class="form-control" required>
+            </div>
+        </form>
+        <div id="profile"></div>
+    </div>
+    <script>
+        
+        function getProfile(e) {
+            e.preventDefault();
+            console.log('Fetching...');
+            var username = document.getElementById('username').value;
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(xhttp.readyState == 4 && xhttp.status == 200){
+                    var user=JSON.parse(xhttp.responseText);
+                    document.getElementById('profile').innerHTML=`
+                        <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"> ${user.name}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-nd-3">
+                                    <img src="${user.avatar_url}">
+                                    </div>
+                                    <div class="col-nd-9">
+                                        <span class="label label-primary">Public Repos: ${user.public_repos}</span>
+                                        <span class="label label-danger">Public Gists: ${user.public_gists}</span><br><br>
+                                        <ul class="list-group">
+                                            <li class="list-group-item">Website: ${user.blog}</li>
+                                                <li class="list-group-item">E-Mail: ${user.email}</li>
+                                                </ul>
+                                                <a class="btn btn-default" target="_blank" href="${user.html_url}" style="background-color:#666;color:beige;">Visit Github</a>
+                                                </div>
+                                                </div>
+                                                </div>
+                                                </div>`;
+                }
+            }
+            xhttp.open('GET', 'https://api.github.com/users/'+username, true);
+            xhttp.send();
+        }
+        document.getElementById('userForm').addEventListener('submit', getProfile, false);
+    </script>
+</body>
+
+</html>
+
